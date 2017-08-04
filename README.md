@@ -306,3 +306,6 @@ WPDatabase::table('table')
 SELECT * FROM table WHERE id BETWEEN 2 AND 3
 */
 ```
+
+## Próximas Atualizações
+[Atualizações](falta.md)
