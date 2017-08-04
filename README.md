@@ -39,6 +39,7 @@ PS: O select() é explanado logo abaixo.
 Sintaxe:
 ```php
 WPDatabase::table('table')
+            ->select()
             ->where()
             ->debug();
 ```
