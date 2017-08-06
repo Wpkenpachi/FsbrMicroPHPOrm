@@ -459,14 +459,12 @@ class WPDatabase {
 
 // ================== Test =================== //
 
-$fields = [
-    'usuarios' => ['nome','email']
-];
-
-$result = WPDatabase::table('usuarios')
+$table = 'table2';
+$on = [ 
+    ['table2.id', '>','table.name'] ];
+WPDatabase::table('table')
             ->select()
-            ->where('id', '>=', 1)
-            ->all(true);
+            ->innerJoin($table, $on)
+            ->debug();
 
-print_r($result);
 

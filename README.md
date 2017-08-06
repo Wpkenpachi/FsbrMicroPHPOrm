@@ -233,6 +233,18 @@ WPDatabase::table('table')
 /*
 SELECT * FROM table INNER JOIN table2 ON table2.id = table.name
 */
+
+OU
+
+$on = [ 
+    ['table2.id', '<>','table.name'] ];
+WPDatabase::table('table')
+            ->select()
+            ->innerJoin($table, $on)
+            ->debug();
+/*
+SELECT * FROM table INNER JOIN table2 ON table2.id <> table.name
+*/
 ```
 
 
@@ -251,6 +263,18 @@ WPDatabase::table('table')
 /*
 SELECT * FROM table LEFT JOIN table2 ON table2.id = table.name
 */
+
+OU
+
+$on = [ 
+    ['table2.id', '<>','table.name'] ];
+WPDatabase::table('table')
+            ->select()
+            ->leftJoin($table, $on)
+            ->debug();
+/*
+SELECT * FROM table LEFT JOIN table2 ON table2.id <> table.name
+*/
 ```
 ### Right Join
 #### Params
@@ -266,6 +290,19 @@ WPDatabase::table('table')
             ->debug();
 /*
 SELECT * FROM table RIGHT JOIN table2 ON table2.id = table.name
+*/
+
+OU
+$table = 'table2';
+$on = [ 
+    ['table2.id', '<>','table.name']
+];
+WPDatabase::table('table')
+            ->select()
+            ->rightJoin($table, $on)
+            ->debug();
+/*
+SELECT * FROM table RIGHT JOIN table2 ON table2.id <> table.name
 */
 ```
 ### Full Join
