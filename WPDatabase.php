@@ -408,14 +408,27 @@ class WPDatabase {
     }
 
 
-    public function single(){
+    public function single($obj = null){
         $this->buildAll();
-        return $this->PreparedQuery->fetch(PDO::FETCH_ASSOC);
+        $result = null;
+        if($obj){
+            $result = $this->PreparedQuery->fetch(PDO::FETCH_OBJ);
+        }else{
+            $result = $this->PreparedQuery->fetch(PDO::FETCH_ASSOC);
+        }
+        return $result;
     }
 
-    public function all(){
+    public function all($obj = null){
         $this->buildAll();
-        return $this->PreparedQuery->fetchAll(PDO::FETCH_ASSOC);
+
+        $result = null;
+        if($obj != null){
+            $result = $this->PreparedQuery->fetchAll(PDO::FETCH_OBJ);
+        }else{
+            $result = $this->PreparedQuery->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return $result;
     }
 
     public function confirm(){
@@ -444,19 +457,16 @@ class WPDatabase {
     }
 }
 
-$dados = [
-    'nome' => 'UserOne',
-    'email' => 'newuser@email.com',
-    'pass' => '123'
+// ================== Test =================== //
+
+$fields = [
+    'usuarios' => ['nome','email']
 ];
 
 $result = WPDatabase::table('usuarios')
-            ->delete()
-            ->where('id', 4)
-            ->confirm();
+            ->select()
+            ->where('id', '>=', 1)
+            ->all(true);
 
-if($result){
-    echo "Foram alterados {$result} registros!";
-}else{
-    echo "Nenhum registro alterado!";
-}
+print_r($result);
+

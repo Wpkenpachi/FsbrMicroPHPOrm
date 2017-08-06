@@ -40,6 +40,33 @@ Sintaxe:
 ```php
 WPDatabase::table('table')
             ->select()
+            ->debug();
+```
+#### Params
+Os parametros podem ser passados de 2 formas.
+Estes são serão os campos que serão retornados
+na consulta
+> select( 'campo' )
+```php
+WPDatabase::table('table')->select('campo1');
+// SELECT campo1 FROM table
+OU
+WPDatabase::table('table')->select('campo1,campo2');
+// SELECT campo1, campo2 FROM table
+
+```
+> select( Array $fields )
+```php
+$campos = [ 'table' => ['campo1', 'campo2'] ];
+WPDatabase::table('table')->select($campos);
+// SELECT table.campo1, table.campo2 FROM table
+```
+
+## Where
+Sintaxe:
+```php
+WPDatabase::table('table')
+            ->select()
             ->where()
             ->debug();
 ```
@@ -82,12 +109,37 @@ O `not()` pode ser utilizado junto ao where.
 Sintaxe:
 ```php
 WPDatabase::table('table')
+            ->select()
             ->where('id = 2')
             ->and()
             ->not()
             ->custom("author = 'Wesley'")
             ->debug();
 // SELECT * FROM table1  WHERE id = 2  AND NOT author = 'Wesley'
+```
+
+### isNull
+O `isNull()` pode ser utilizado junto ao where e complementado com um custom.
+Sintaxe:
+```php
+WPDatabase::table('table')
+            ->select()
+            ->where('campo1')
+            ->isNull()
+            ->debug();
+// SELECT * FROM table1 WHERE campo1 IS NULL'
+```
+
+### isNotNull
+O `isNotNull()` pode ser utilizado junto ao where e complementado com um custom.
+Sintaxe:
+```php
+WPDatabase::table('table')
+            ->select()
+            ->where('campo1')
+            ->isNotNull()
+            ->debug();
+// SELECT * FROM table1 WHERE campo1 IS NOT NULL'
 ```
 
 ## Create
@@ -307,6 +359,57 @@ WPDatabase::table('table')
 SELECT * FROM table WHERE id BETWEEN 2 AND 3
 */
 ```
+
+## Obtendo Resultados
+
+### All
+Retorna todos os resultados da consulta em um Array ou em forma de Objeto.
+
+#### Params
+Aceita um parâmetro opcional: all($obj = null), caso você sete true, o resultado retornará
+Como um objeto. Caso deixe o parametro vazio, o resultado será retornado normalmente como um Array
+Sintaxe:
+```php
+    $resultado = WPDatabase::table('table')
+                ->select()
+                ->where('id', 1)
+                ->all();
+```
+
+
+### Single
+Retorna o primeiro resultado da consulta em um Array ou em forma de Objeto.
+
+#### Params
+Aceita um parâmetro opcional: all($obj = null), caso você sete true, o resultado retornará
+Como um objeto. Caso deixe o parametro vazio, o resultado será retornado normalmente como um Array
+Sintaxe:
+```php
+    $resultado = WPDatabase::table('table')
+                ->select()
+                ->where('id', 1)
+                ->single();
+```
+### Confirm
+Retorna o número de colunas afetadas pela operação, ou 0, caso nenhuma tenha sido afetada.
+Sintaxe:
+```php
+    $data = ['nome' => 'outro'];
+    $resultado = WPDatabase::table('table')
+                ->update($data)
+                ->where('id', 1)
+                ->confirm();
+```
+### LastId
+Retorna a chave primária do último registro feito em uma tabela.
+Sintaxe:
+```php
+    $data = ['nome' => 'ninguem', 'idade' => 27]
+    $resultado = WPDatabase::table('table')
+                ->create()
+                ->lastId();
+```
+
 
 ## Próximas Atualizações
 [Atualizações](falta.md)
