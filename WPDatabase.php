@@ -6,23 +6,38 @@ class WPDatabase {
     use Connect;
 
     /*
-     *  @var $Instance = Instance of WPDatabase Object
-     */
+    *  @var $Instance = Instance of WPDatabase Object
+    */
     private static $Instance;
 
     /*
-     *  @var $Instance = Instance of PDO::Statement Connection
-     */
+    *  @var $Instance = Instance of PDO::Statement Connection
+    */
     protected static $Db;
 
     /*
-     * @var $Table
-     */
+    * @var $Table
+    */
+    protected static $Table;
+
+    /*
+    * @var $Query
+    */
+    protected $Query;
+
+    /*
+    * @var $PreparedQuery
+    */
+    protected $PreparedQuery;
+
+    /*
+    * @var $Result
+    */
+    protected $Result;
 
     // ==================================================== //
     // ============= Variaveis de Operações =============== //
     // ==================================================== //
-    protected static $Table;
     protected $QueryString;
     protected $Inner;
     protected $Where;
@@ -379,11 +394,46 @@ class WPDatabase {
         // Verify if the query string is empty or null
         if( !empty($this->QueryString) && !empty(self::$Table) ):
 
-            echo $this->QueryString . $this->Inner . $this->Where;
+        $this->Query =  $this->QueryString . 
+                        $this->Inner . 
+                        $this->Where .
+                        $this->Option .
+                        $this->OptionLater;
 
         endif;
+
+        // Building,Preparing and Executing Query
+        $this->PreparedQuery = self::$Db->prepare($this->Query);
+        $this->PreparedQuery->execute();
     }
-    // ==== Public Return Methods ==== //
+
+
+    public function single(){
+        $this->buildAll();
+        return $this->PreparedQuery->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function all(){
+        $this->buildAll();
+        return $this->PreparedQuery->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function confirm(){
+        $this->buildAll();
+        return $this->PreparedQuery->rowCount();
+    }
+
+    public function lastId(){
+        $this->buildAll();
+        return self::$Db->lastInsertId();
+    }
+
+
+
+    // ===================================================== //
+    // ==== Public RETURN Methods ========================== //
+    // ===================================================== //
+    
 
     public function debug(){
         echo $this->QueryString . 
@@ -394,8 +444,19 @@ class WPDatabase {
     }
 }
 
-WPDatabase::table('table')
-            ->select()
-            ->where('id')
-            ->between(2,3)
-            ->debug();
+$dados = [
+    'nome' => 'UserOne',
+    'email' => 'newuser@email.com',
+    'pass' => '123'
+];
+
+$result = WPDatabase::table('usuarios')
+            ->delete()
+            ->where('id', 4)
+            ->confirm();
+
+if($result){
+    echo "Foram alterados {$result} registros!";
+}else{
+    echo "Nenhum registro alterado!";
+}
